@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>Data Validator</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #191919;
+            font-size: 10px;
+            color: white;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            gap: 10px;
+        }
+
+        .top {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .label {
+            width: 560px;
+            height: 25px;
+            background-color: #2c2c2c;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 0;
+            flex-grow: 0;
+            font-family: Consolas, 'Courier New', monospace; 
+            /* white-space: pre-wrap; */
+        }
+
+        .bottom {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            all: unset;
+            width: 130px;
+            height: 25px;
+            border-radius: 2px;
+            text-align: center;
+            background-color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            flex-grow: 0;
+            /* transition: all 0.1s ease-in-out; */
+        }
+
+        button:active {
+            transform: scale(0.96);           /* 🔽 Press-in effect */
+            background-color: #333333;        /* 🔳 Slightly darker */
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .btn-file {
+            background-color: #4657CE;
+            /* background-color: #496580; */
+
+        }
+
+        .btn-data {
+            /* background-color: #25BDB0; */
+            /* background-color: #36846C; */
+            /* background-color: #01B58A; */
+            background-color: #4D4D4D;
+
+
+
+        }
+
+        .btn-grey {
+            background-color: #4D4D4D;
+        }
+
+        .btn-orange {
+            background-color: #fb4422;
+        }
+
+        .output {
+            width: 560px;
+            height: 495px;
+            background-color: #2e2e2e;
+            border-radius: 4px;
+            padding: 10px;
+            overflow: auto;
+            flex-shrink: 0;
+            flex-grow: 0;
+            box-sizing: border-box;
+            font-size: 12px;
+            font-family: Consolas, 'Courier New', monospace; /* 🔧 Apply monospaced font */
+            white-space: pre-wrap; /* preserves line breaks */
+        }
+
+        .icon {
+            /* position: absolute; */
+            width: 18px;
+            height: 18px;
+            /* margin-left: 8px; */
+            margin-right: 3px;
+            /* left: 25px */
+        }
+
+        .center-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        #activateButton {
+            position: absolute;
+            top: 150px;
+            left: 10px;
+            z-index: 10;          /* make sure it floats above others */
+        }
+
+        .start-btn {
+            all: unset;
+            margin-top: 135px;
+            /* margin-left: 10px; */
+            width: 130px;
+            height: 25px;
+            border-radius: 2px;
+            text-align: center;
+            background-color: #01B58A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+        .submaster-download-btn {
+            all: unset;
+            /* margin-top: 135px; */
+            /* margin-left: 10px; */
+            width: 95px;
+            height: 25px;
+            border-radius: 2px;
+            text-align: center;
+            background-color: #4D4D4D;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+        .submaster-refresh-btn {
+            all: unset;
+            /* margin-top: 135px; */
+            /* margin-left: 10px; */
+            width: 25px;
+            height: 25px;
+            border-radius: 2px;
+            text-align: center;
+            background-color: #4D4D4D;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            flex-grow: 0;
+        }
+
+
+        .form-section {
+            margin-top: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .text-box {
+            all: unset;
+            width: 26px;
+            height: 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 2px 5px;
+            font-size: 10px;
+            border-radius: 2px;
+        }
+
+        .text-dropdown {
+            all: unset;
+            width: 120px;
+            height: 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 2px 5px;
+            font-size: 10px;
+            border-radius: 2px;
+            /* appearance: auto; */
+        }
+
+        .styled-input {
+            width: 180px;
+            height: 25px;
+            background-color: white;
+            color: black;
+            border-radius: 2px;
+            border: 1px solid #ccc;
+            font-size: 10px;
+            padding: 2px 5px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .dropdown-section {
+            margin-top: 135px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .ts-wrapper {
+            width: 130px !important;
+            font-size: 10px;
+            line-height: 1 !important;
+        }
+
+        .ts-control {
+            display: flex !important;
+            align-items: center !important;
+            height: 25px !important;
+            padding: 2px 6px !important;
+            border: 1px solid #ccc !important;
+            background-color: white !important;
+            border-radius: 2px !important;
+            color: black !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            flex-wrap: nowrap !important;         /* 💡 Prevents wrapping */
+        }
+
+        .ts-control > .item {
+            font-size: 10px !important;
+            line-height: 1 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .ts-control input {
+            height: 100% !important;
+            font-size: 10px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            line-height: 1 !important;
+            border: none !important;
+            background: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            flex: 1 1 auto !important;
+        }
+
+        /* Dropdown style */
+        .ts-dropdown {
+            max-height: 97px;
+            overflow-y: hidden;
+            font-size: 10px;
+            background-color: #fff;
+            color: black;
+        }
+
+        .ts-dropdown .ts-dropdown-content {
+            max-height: 97px;
+            overflow-y: auto; /* enables scroll only on the actual content */
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- Top Layout -->
+        <div class="top">
+            <div class="row">
+                <button id="MRS003FileBtn" class="btn-file" onclick="MRS003_file()">MRS003</button>
+                <div id="MRS003_label" class="label"></div>
+            </div>
+            <div class="row">
+                <button id="subFiletbBtn" class="btn-file" onclick="subMaster_file()">Sub Master</button>
+                <div id="Sub_label" class="label"></div>
+            </div>
+            <div class="row">
+                <button id="dataFileBtn" class="btn-data" onclick="data_file()"><img src="img/datafile.png" alt="Icon" class="icon">Data File</button>
+                <div id="Data_label" class="label"></div>
+            </div>
+            <div class="row">
+                <button id = "ionButton" class="btn-grey" onclick="ion_file()"><img src="img/infor.png" alt="Icon" class="icon">ION File</button>
+                <div id="ION_label" class="label"></div>
+            </div>
+        </div>
+
+        <!-- Bottom Layout -->
+        <div class="bottom">
+
+            <div class="buttons">
+                <button id = "activateButton" class="btn-orange" onclick="activatieProduct()"><img src="img/key.png" alt="Icon" class="icon">Activate Product</button>
+                <button id = "startButton" class="start-btn" onclick="startValidation()">Start Validation</button>
+                <button id = "stopButton" class="btn-orange" onclick="stopValidation()">Stop Validation</button>
+
+
+                <!-- Dropdown Section -->
+                <div class="dropdown-section">
+
+                    <select id="programDropdown" placeholder="Program" autocomplete="off">
+                        <option value=""></option>
+                    </select>
+
+
+                    <select id="transactionDropdown" placeholder="Transation" autocomplete="off">
+                        <option value=""></option>
+                    </select>
+                
+                    <button id = "templateButton" class="btn-grey" onclick="download_template()"><img src="img/download.png" alt="Icon" class="icon">Template</button>
+                </div>
+
+
+                <!-- CMP + DIVI + Download Button Section -->
+                <div class="form-section">
+                    <div class="form-group">
+                        <label id="cmp_lb" for="cmp">CMP</label>
+                        <input id="cmp" type="text" class="text-box" />
+                        <label id="divi_lb" for="divi" style="margin-left: 1px;">DIVI</label>
+                        <input id="divi" type="text" class="text-box" />
+                    </div>
+
+                    <button id = "subMasterButton" class="btn-grey" onclick="th_download_submaster()"><img src="img/download.png" alt="Icon" class="icon">Sub Masters</button>
+                    <!-- <div class="row">
+                        <button id = "subMasterSmallButton" class="submaster-download-btn" onclick="th_download_submaster()"><img src="img/download.png" alt="Icon" class="icon">Sub Masters</button>
+                        <button id = "subMasterRefresh" class="submaster-refresh-btn" onclick="refresh_submaster()"><img src="img/refresh.png" alt="Icon" class="center-icon"></button>
+
+                    </div> -->
+                </div>
+
+
+            </div>
+
+            <div id="shared-output" class="output"></div>
+        </div>
+
+    </div>
+
+    <script>
+        async function MRS003_file() {
+            const message = await window.pywebview.api.MRS003_file();
+            document.getElementById('MRS003_label').innerText = message;
+        }
+
+        async function subMaster_file() {
+            const message = await window.pywebview.api.subMaster_file();
+            document.getElementById('Sub_label').innerText = message;
+        }
+
+        async function data_file() {
+            const message = await window.pywebview.api.data_file();
+            document.getElementById('Data_label').innerText = message;
+        }
+
+        async function ion_file() {
+            const message = await window.pywebview.api.ion_file();
+            document.getElementById('ION_label').innerText = message.file_path;
+            document.getElementById('cmp').value = message.CONO;
+            document.getElementById('divi').value = message.DIVI;
+        }
+
+        function startValidation() {
+            window.pywebview.api.startValidation();
+        }
+
+        function stopValidation() {
+            window.pywebview.api.stopValidation();
+        }
+
+
+        // For formatting indent wihout new line
+        function print_output_v6(message) {
+            const output = document.getElementById('shared-output');
+            if (!output) return;
+
+            const existing = output.innerHTML.trim();
+            
+            // Add <br> *after* existing content (only if not empty), then add the new message
+            output.innerHTML = existing ? existing + message : message;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // For formatting indent wih new line
+        function print_output_v5(message) {
+            const output = document.getElementById('shared-output');
+            if (!output) return;
+
+            const existing = output.innerHTML.trim();
+            const newline = existing ? "<br>" : "";
+
+            output.innerHTML += newline + message + "<br>";
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function print_output_v4(message) {
+            const output = document.getElementById('shared-output');
+            if (!output) return;
+
+            output.innerText = message + "\n"; // clear and set new message
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function print_output_v3(message) {
+            const output = document.getElementById('shared-output');
+            if (!output) return;
+
+            const existing = output.innerText.trim();
+            const newline = existing ? "\n" : "";
+
+            output.innerText += newline + message + "\n";
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function print_output_v2(message) {
+            const output = document.getElementById('shared-output');
+            if (output) {
+                output.innerText = "Starting...\n\n" + message + "\n";
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        function print_output(message) {
+            const output = document.getElementById('shared-output');
+            if (!output) return;
+
+            output.innerText += message + "\n";
+            output.scrollTop = output.scrollHeight; // auto-scroll to bottom
+        }
+
+        function clear_output_text() {
+            const output = document.getElementById('shared-output');
+            if (output) {
+                output.innerText = "";
+                output.scrollTop = 0;
+            }
+        }
+
+        function th_download_submaster() {
+            window.pywebview.api.th_download_submaster();
+        }
+
+        function download_template() {
+            window.pywebview.api.download_template();
+        }
+
+        function refresh_submaster() {
+            window.pywebview.api.refresh_submaster();
+        }
+
+
+        let programSelect;
+        let transactionSelect;
+
+
+        function populateProgramDropdown(options) {
+            // Clear existing options
+            programSelect.clearOptions();
+
+            // Add new ones
+            options.forEach(value => {
+                programSelect.addOption({ value: value, text: value });
+            });
+
+            programSelect.refreshOptions(false);
+        }
+
+        function clearProgramDropdown() {
+            if (programSelect) {
+                programSelect.clear();           // Clears the selected value
+                programSelect.clearOptions();    // Removes all options
+                programSelect.refreshOptions(false);
+            }
+        }
+
+        
+
+
+        function populateTransactionDropdown(options) {
+            transactionSelect.clearOptions();
+            options.forEach(value => {
+                transactionSelect.addOption({ value: value, text: value });
+            });
+            transactionSelect.refreshOptions(false);
+        }
+
+        function clearTransactionDropdown() {
+            transactionSelect.clear();
+            transactionSelect.clearOptions();
+            transactionSelect.refreshOptions(false);
+        }
+
+        function clearCmpDivi() {
+            const cmpInput = document.getElementById('cmp');
+            const diviInput = document.getElementById('divi');
+
+            if (cmpInput) cmpInput.value = '';
+            if (diviInput) diviInput.value = '';
+        }
+
+        function activatieProduct() {
+            const key = prompt("Please enter your activation key:");
+            if (key !== null && key.trim() !== "") {
+                window.pywebview.api.handle_activation_key(key.trim());
+            } 
+        }
+
+
+        
+
+        document.addEventListener("DOMContentLoaded", function () {
+            programSelect = new TomSelect("#programDropdown", {
+                create: true,
+                sortField: { field: "text", direction: "asc" },
+                maxOptions: null,
+                onChange: function (value) {
+                    if (value) {
+                        window.pywebview.api.get_transaction_options(value);
+                    } else {
+                        clearTransactionDropdown(); // optional
+                    }
+                }
+            });
+
+            transactionSelect = new TomSelect("#transactionDropdown", {
+                create: true,
+                sortField: { field: "text", direction: "asc" },
+                maxOptions: null
+            });
+
+            const cmpInput = document.getElementById("cmp");
+            const diviInput = document.getElementById("divi");
+
+
+            if (cmpInput) {
+                cmpInput.addEventListener("input", function () {
+                    clearProgramDropdown();
+                    clearTransactionDropdown();
+                    window.pywebview.api.Program_dropdown()
+                });
+            }
+
+            if (diviInput) {
+                diviInput.addEventListener("input", function () {
+                    clearProgramDropdown();
+                    clearTransactionDropdown();
+                    window.pywebview.api.Program_dropdown()
+                });
+            }
+
+
+        });
+
+    </script>
+
+</body>
+
+</html>
